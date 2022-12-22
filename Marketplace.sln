@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace", "Marketplace\Marketplace.csproj", "{1F3468EF-3D54-4B95-B260-9B3764B87F52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace.Domain", "Marketplace.Domain\Marketplace.Domain.csproj", "{F22B6A9B-9C61-4172-92D2-AEFB4D0E26A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace.Tests", "Marketplace.Tests\Marketplace.Tests.csproj", "{D0AE0EE3-68E5-463A-BA43-A20FFFB44F0A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace.Framework", "Marketplace.Framework\Marketplace.Framework.csproj", "{BB056C1E-344E-4DDD-915B-E6576E2080E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketplace.Api", "Marketplace.Api\Marketplace.Api.csproj", "{3C08B960-C8FF-4602-8E2F-E6C112795F1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketplace.Infrastructure", "Marketplace.Infrastructure\Marketplace.Infrastructure.csproj", "{6AAB6F8E-C433-4A5F-B989-F221A685B1E1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F3468EF-3D54-4B95-B260-9B3764B87F52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F3468EF-3D54-4B95-B260-9B3764B87F52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F3468EF-3D54-4B95-B260-9B3764B87F52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F3468EF-3D54-4B95-B260-9B3764B87F52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F22B6A9B-9C61-4172-92D2-AEFB4D0E26A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F22B6A9B-9C61-4172-92D2-AEFB4D0E26A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F22B6A9B-9C61-4172-92D2-AEFB4D0E26A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F22B6A9B-9C61-4172-92D2-AEFB4D0E26A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0AE0EE3-68E5-463A-BA43-A20FFFB44F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0AE0EE3-68E5-463A-BA43-A20FFFB44F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0AE0EE3-68E5-463A-BA43-A20FFFB44F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0AE0EE3-68E5-463A-BA43-A20FFFB44F0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB056C1E-344E-4DDD-915B-E6576E2080E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB056C1E-344E-4DDD-915B-E6576E2080E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB056C1E-344E-4DDD-915B-E6576E2080E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB056C1E-344E-4DDD-915B-E6576E2080E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C08B960-C8FF-4602-8E2F-E6C112795F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C08B960-C8FF-4602-8E2F-E6C112795F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C08B960-C8FF-4602-8E2F-E6C112795F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C08B960-C8FF-4602-8E2F-E6C112795F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AAB6F8E-C433-4A5F-B989-F221A685B1E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AAB6F8E-C433-4A5F-B989-F221A685B1E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AAB6F8E-C433-4A5F-B989-F221A685B1E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AAB6F8E-C433-4A5F-B989-F221A685B1E1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6CA2C43B-ED3B-4C0F-86DA-8B537EAFF6C5}
+	EndGlobalSection
+EndGlobal
