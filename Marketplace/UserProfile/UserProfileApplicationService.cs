@@ -7,14 +7,12 @@ namespace Marketplace.UserProfile
 {
     public class UserProfileApplicationService : IApplicationService
     {
-        private readonly IUserProfileRepository _repository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAggregateStore _store;
         private readonly CheckTextForProfanity _checkText;
 
-        public UserProfileApplicationService(IUserProfileRepository repository, IUnitOfWork unitOfWork, CheckTextForProfanity checkText)
+        public UserProfileApplicationService(IAggregateStore store, CheckTextForProfanity checkText)
         {
-            _repository = repository;
-            _unitOfWork = unitOfWork;
+            _store = store;
             _checkText = checkText;
         }
 
@@ -45,26 +43,21 @@ namespace Marketplace.UserProfile
 
         private async Task HandleCreate(V1.RegisterUser cmd)
         {
-            if (await _repository.Exists(new UserId(cmd.UserId)))
-            {
-                throw new InvalidOperationException($"Entity with {cmd.UserId} already exists");
-            }
+            if (await _store.Exists<Marketplace.Domain.UserProfile.UserProfile, UserId>(new UserId(cmd.UserId)))
+                throw new InvalidOperationException(
+                $"Entity with id {cmd.UserId} already exists");
 
-            var userProfile = new Marketplace.Domain.UserProfile.UserProfile(new UserId(cmd.UserId),FullName.FromString(cmd.FullName),DisplayName.FromString(cmd.DisplayName,_checkText ));
-
-            await _repository.Add(userProfile);
-            await _unitOfWork.Commit();
+            var userProfile = new Domain.UserProfile.UserProfile(
+                        new UserId(cmd.UserId),
+                        FullName.FromString(cmd.FullName),
+                        DisplayName.FromString(cmd.DisplayName, _checkText)
+                    );
+            await _store.Save<Domain.UserProfile.UserProfile, UserId>(userProfile);
         }
 
         private async Task HandleUpdate(Guid id, Action<Marketplace.Domain.UserProfile.UserProfile> operation)
         {
-            var userProfile = await _repository.Load(new UserId(id));
-            if (userProfile == null)
-            {
-                throw new InvalidOperationException($"Entity with {id} does not exists");
-            }
-            operation(userProfile);
-            await _unitOfWork.Commit();
+            await this.HandleUpdate(_store, new UserId(id), operation);
         }
     }
 }

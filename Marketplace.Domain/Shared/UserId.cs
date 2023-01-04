@@ -24,5 +24,7 @@ namespace Marketplace.Domain.Shared
         }
         internal UserId() { }
         public static implicit operator Guid(UserId self) => self.Value;
+        public override string ToString() => Value.ToString();
+        
     }
 }

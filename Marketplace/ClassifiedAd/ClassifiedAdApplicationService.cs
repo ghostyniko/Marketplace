@@ -8,15 +8,14 @@ namespace Marketplace.ClassifiedAd
 {
     public class ClassifiedAdApplicationService : IApplicationService
     {
-        private readonly IClassifiedAdRepository _repository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAggregateStore _store;
         private ICurrencyLookup _currencyLookup;
         public ClassifiedAdApplicationService(
-        IClassifiedAdRepository repository, ICurrencyLookup currencyLookup, IUnitOfWork unitOfWork)
+                IAggregateStore store, ICurrencyLookup currencyLookup
+        )
         {
-            _repository = repository;
             _currencyLookup = currencyLookup;
-            _unitOfWork = unitOfWork;
+            _store = store;
         }
         public async Task Handle(object command)
         {
@@ -49,28 +48,20 @@ namespace Marketplace.ClassifiedAd
 
         private async Task HandleCreate(V1.Create cmd)
         {
-            if (await _repository.Exists(new ClassifiedAddId(cmd.Id)))
-            {
-                throw new InvalidOperationException($"Entity with {cmd.Id} already exists");
-            }
+            if (await _store.Exists<ClassifiedAdd, ClassifiedAddId>(new ClassifiedAddId(cmd.Id)))
+                throw new InvalidOperationException(
+                $"Entity with id {cmd.Id} already exists");
 
-            var classifiedAd = new ClassifiedAdd(new ClassifiedAddId(cmd.Id), new UserId(cmd.OwnerId));
-            Log.Information($"{classifiedAd.Id}");
-            await _repository.Add(classifiedAd);
-            await _unitOfWork.Commit();
-
+            var classifiedAd = new ClassifiedAdd(
+                new ClassifiedAddId(cmd.Id),
+                new UserId(cmd.OwnerId)
+            );
+            await _store.Save<ClassifiedAdd,ClassifiedAddId>(classifiedAd);
         }
 
-        private async Task HandleUpdate(Guid id, Action<ClassifiedAdd> operation)
+        private async Task HandleUpdate(Guid id,Action<ClassifiedAdd> operation)
         {
-            var classifiedAd = await _repository.Load(new ClassifiedAddId(id));
-            if (classifiedAd == null)
-            {
-                throw new InvalidOperationException($"Entity with {id} does not exists");
-            }
-            operation(classifiedAd);
-            await _unitOfWork.Commit();
-
+            await this.HandleUpdate(_store,new ClassifiedAddId(id),operation);
         }
 
     }

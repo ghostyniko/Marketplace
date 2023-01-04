@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raven.Client.Documents.Session;
 using Serilog;
 using System.Net;
+using static Marketplace.ClassifiedAd.ReadModels;
 using ILogger = Serilog.ILogger;
 
 namespace Marketplace.ClassifiedAd
@@ -11,33 +12,34 @@ namespace Marketplace.ClassifiedAd
     public class ClassifiedAdsQueryApi : Controller
     {
         private readonly IAsyncDocumentSession _session;
+        
         public ClassifiedAdsQueryApi(IAsyncDocumentSession session)
         => _session = session;
 
         private static readonly ILogger _log =
                 Serilog.Log.ForContext<ClassifiedAdsQueryApi>();
 
-        [HttpGet]
-        [Route("list")]
-        public Task<IActionResult> Get(QueryModels.GetPublishedClassifiedAds request)
-        {
-            return RequestHandler.HandleQuery(()=>_session.Query(request), _log);
+        //[HttpGet]
+        //[Route("list")]
+        //public Task<IActionResult> Get(QueryModels.GetPublishedClassifiedAds request)
+        //{
+        //    return RequestHandler.HandleQuery(()=>_session.Query(request), _log);
            
-        }
+        //}
 
-        [HttpGet]
-        [Route("myads")]
-        public Task<IActionResult> Get(QueryModels.GetOwnersClassifiedAd request)
-        {
-            return RequestHandler.HandleQuery(() => _session.Query(request), _log);
-        }
+        //[HttpGet]
+        //[Route("myads")]
+        //public Task<IActionResult> Get(QueryModels.GetOwnersClassifiedAd request)
+        //{
+        //    return RequestHandler.HandleQuery(() => _session.Query(request), _log);
+        //}
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public Task<IActionResult> Get(QueryModels.GetPublicClassifiedAd request)
+        public async Task<IActionResult> Get(QueryModels.GetPublicClassifiedAd request)
         {
-            return RequestHandler.HandleQuery(() => _session.Query(request), _log);
+            return await RequestHandler.HandleQuery(async() => await _session.Query(request), _log);
 
         }
 

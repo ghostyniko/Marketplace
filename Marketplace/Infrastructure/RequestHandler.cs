@@ -18,6 +18,7 @@ namespace Marketplace.Infrastructure
             }
             catch (Exception e)
             {
+               
                 log.Error(e, "Error handling the request");
                 return new BadRequestObjectResult(new
                 {

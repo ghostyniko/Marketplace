@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Marketplace.Domain.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,6 +40,7 @@ namespace Marketplace.Domain.ClassifiedAd
         {
             public Guid Id { get; set; }
             public Guid ApprovedBy { get; set; }
+            public Guid OwnerId { get; set; }
         }
 
         public class PictureAddedToAClassifiedAd

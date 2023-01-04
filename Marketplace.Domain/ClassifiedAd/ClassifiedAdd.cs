@@ -90,6 +90,7 @@ namespace Marketplace.Domain.ClassifiedAd
             {
                 Id = Id,
                 ApprovedBy = approvedBy,
+                OwnerId = OwnerId
             });
         }
 
