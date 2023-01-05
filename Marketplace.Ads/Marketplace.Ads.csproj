@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="RavenDB.Client" Version="5.4.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Marketplace.Ads.Domain\Marketplace.Ads.Domain.csproj" />
+    <ProjectReference Include="..\Marketplace.Ads.Messages\Marketplace.Ads.Messages.csproj" />
+    <ProjectReference Include="..\Marketplace.EventSourcing\Marketplace.EventSourcing.csproj" />
+    <ProjectReference Include="..\Marketplace.EventStore\Marketplace.EventStore.csproj" />
+    <ProjectReference Include="..\Marketplace.RavenDb\Marketplace.RavenDb.csproj" />
+    <ProjectReference Include="..\Marketplace.WebApi\Marketplace.WebApi.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -28,9 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Marketplace.Domain\Marketplace.Domain.csproj" />
-    <ProjectReference Include="..\Marketplace.Framework\Marketplace.Framework.csproj" />
-    <ProjectReference Include="..\Marketplace.Infrastructure\Marketplace.Infrastructure.csproj" />
+    <ProjectReference Include="..\Marketplace.Ads.Domain\Marketplace.Ads.Domain.csproj" />
   </ItemGroup>
 
 </Project>
