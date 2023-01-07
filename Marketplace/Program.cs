@@ -1,19 +1,24 @@
 using Marketplace;
-using Marketplace.ClassifiedAd;
-using Marketplace.Domain.ClassifiedAd;
-using Marketplace.Domain.Shared;
-using Marketplace.Framework;
+
 using Marketplace.Infrastructure;
 using Raven.Client.Documents;
 using Serilog;
-using Marketplace.UserProfile;
+
 using EventStore.ClientAPI;
-using static Marketplace.ClassifiedAd.ReadModels;
-using static Marketplace.UserProfile.ReadModels;
-using Marketplace.Projections;
+
 using Raven.Client.ServerWide.Operations;
 using Raven.Client.ServerWide;
 using Raven.Client.Documents.Session;
+using Marketplace.Infrastructure.Profanity;
+using Marketplace.Modules.Images;
+using Marketplace.EventStore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Marketplace.WebApi;
+using Marketplace.Ads;
+using Marketplace.Infrastructure.Currency;
+using Marketplace.Infrastructure.RavenDb;
+using static Marketplace.Infrastructure.RavenDb.Configuration;
+using Marketplace.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,67 +43,64 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 var environment = builder.Environment;
 
-var profanityClient = new ProfanityClient();
-
-Log.Logger = new LoggerConfiguration()
-        .WriteTo.Console()
-        .CreateLogger();
-
 var esConnection = EventStoreConnection.Create(
     configuration["eventStore:connectionString"],
  ConnectionSettings.Create().KeepReconnecting(),
  environment.ApplicationName);
 
-esConnection.Connected += (@event, _args) =>
-{
-    Log.Information("Successfull connection");
-};
-esConnection.ErrorOccurred += (@event, _args) =>
-{
-    Log.Information("Error occured");
-};
-esConnection.Reconnecting += (@event, _args) =>
-{
-    Log.Information("Reconnection occured");
-};
-esConnection.AuthenticationFailed += (@event, _args) =>
-{
-    Log.Information("Auth failed");
-};
+var profanityClient = new ProfanityClient();
 
-var documentStore = ConfigureRavenDb(configuration);
-Func<IAsyncDocumentSession> getSession =
- () => documentStore.OpenAsyncSession();
+var documentStore = ConfigureRavenDb(
+   configuration["ravenDb:server"]
+);
 
-builder.Services.AddTransient(c => getSession());
-
-var classifiedAdDetails = new List<ClassifiedAdDetails>();
-builder.Services.AddSingleton<IEnumerable<ClassifiedAdDetails>>(classifiedAdDetails);
-var userDetails = new List<UserDetails>();
-builder.Services.AddSingleton<IEnumerable<UserDetails>>(userDetails);
-
-var ravenDbCheckpointStore = new RavenDbCheckpointStore(getSession, "readmodel");
-
-var projections = new IProjection[]
-{
-    new UserDetailsProjection(getSession),
-    new ClassifiedAdDetailsProjection(getSession,async userId => (await getSession.GetUserDetails(userId))?.DisplayName),
-    new ClassifiedAdUpcasters(esConnection,id=>"bla")
-};
-var subscription = new ProjectionsManager(esConnection,ravenDbCheckpointStore, projections);
-
-var store = new EsAggregateStore(esConnection);
+builder.Services.AddSingleton(new ImageQueryService(ImageStorage.GetFile));
 builder.Services.AddSingleton(esConnection);
-builder.Services.AddSingleton<IAggregateStore>(store);
+builder.Services.AddSingleton(documentStore);
+builder.Services.AddSingleton<IHostedService, EventStoreService>();
 
-builder.Services.AddSingleton(new ClassifiedAdApplicationService(
-store, new FixedCurrencyLookup()));
+//builder.Services
+//       .AddAuthentication(
+//           CookieAuthenticationDefaults.AuthenticationScheme
+//            )
+//       .AddCookie();
 
-builder.Services.AddSingleton(new UserProfileApplicationService(
-store, _text => profanityClient.CheckForProfacity(_text)));
+builder.Services
+    .AddMvcCore(
+        options => options.Conventions.Add(new CommandConvention())
+    )
+    .AddApplicationPart(assembly: builder.GetType().Assembly)
+    .AddAdsModule(
+        "ClassifiedAds",
+        new FixedCurrencyLookup(),
+        ImageStorage.UploadFile
+    )
+    .AddUsersModule(
+        "Users",
+         profanityClient.CheckForProfanity
+     );
 
-builder.Services.AddSingleton<IHostedService>(
- new EventStoreService(esConnection, subscription));
+//Log.Logger = new LoggerConfiguration()
+//        .WriteTo.Console()
+//        .CreateLogger();
+
+
+//esConnection.Connected += (@event, _args) =>
+//{
+//    Log.Information("Successfull connection");
+//};
+//esConnection.ErrorOccurred += (@event, _args) =>
+//{
+//    Log.Information("Error occured");
+//};
+//esConnection.Reconnecting += (@event, _args) =>
+//{
+//    Log.Information("Reconnection occured");
+//};
+//esConnection.AuthenticationFailed += (@event, _args) =>
+//{
+//    Log.Information("Auth failed");
+//};
 
 
 
@@ -127,22 +129,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
- static IDocumentStore ConfigureRavenDb(IConfiguration configuration)
-{
-    var store = new DocumentStore
-    {
-        Urls = new[] { configuration["ravenDb:server"] },
-        Database = configuration["ravenDb:database"]
-    };
-    store.Initialize();
-    var record = store.Maintenance.Server.Send(
-        new GetDatabaseRecordOperation(store.Database));
-    if (record == null)
-    {
-        store.Maintenance.Server.Send(
-            new CreateDatabaseOperation(new DatabaseRecord(store.Database)));
-    }
-
-    return store;
-}

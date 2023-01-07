@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EventStore.Client" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
@@ -29,6 +30,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Marketplace.Ads.Domain\Marketplace.Ads.Domain.csproj" />
+    <ProjectReference Include="..\Marketplace.Ads\Marketplace.Ads.csproj" />
+    <ProjectReference Include="..\Marketplace.EventStore\Marketplace.EventStore.csproj" />
+    <ProjectReference Include="..\Marketplace.Users\Marketplace.Users.csproj" />
+    <ProjectReference Include="..\Marketplace.WebApi\Marketplace.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

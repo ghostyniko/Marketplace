@@ -29,4 +29,4 @@ namespace Marketplace.Infrastructure.Currency
         }
     }
 }
-}
+
